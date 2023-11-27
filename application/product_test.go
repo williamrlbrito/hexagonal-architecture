@@ -1,17 +1,17 @@
-package aplication_test
+package application_test
 
 import (
 	"testing"
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/williamrlbrito/hexagonal-architecture/aplication"
+	"github.com/williamrlbrito/hexagonal-architecture/application"
 )
 
 func TestProductEnable(t *testing.T) {
-	product := aplication.Product{}
+	product := application.Product{}
 	product.Name = "Product Test"
-	product.Status = aplication.DISABLED
+	product.Status = application.DISABLED
 	product.Price = 10
 
 	err := product.Enable()
@@ -23,9 +23,9 @@ func TestProductEnable(t *testing.T) {
 }
 
 func TestProductDisable(t *testing.T) {
-	product := aplication.Product{}
+	product := application.Product{}
 	product.Name = "Product Test"
-	product.Status = aplication.ENABLED
+	product.Status = application.ENABLED
 	product.Price = 0
 
 	err := product.Disable()
@@ -37,10 +37,10 @@ func TestProductDisable(t *testing.T) {
 }
 
 func TestProductIsValid(t *testing.T) {
-	product := aplication.Product{}
+	product := application.Product{}
 	product.ID = uuid.NewV4().String()
 	product.Name = "Product Test"
-	product.Status = aplication.ENABLED
+	product.Status = application.ENABLED
 	product.Price = 10
 
 	_, err := product.IsValid()
@@ -55,7 +55,7 @@ func TestProductIsValid(t *testing.T) {
 	_, err = product.IsValid()
 	assert.Equal(t, "the status must be enabled or disabled", err.Error())
 
-	product.Status = aplication.ENABLED
+	product.Status = application.ENABLED
 	_, err = product.IsValid()
 	assert.Nil(t, err)
 }

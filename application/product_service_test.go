@@ -22,3 +22,47 @@ func TestProductService_Get(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, product, result)
 }
+
+func TestProductService_Create(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	product := mock_application.NewMockProductInterface(ctrl)
+	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
+	service := application.ProductService{Persistence: persistence}
+
+	result, err := service.Create("Product Test", 25)
+	assert.Nil(t, err)
+	assert.Equal(t, product, result)
+}
+
+func TestProductService_Enable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	product := mock_application.NewMockProductInterface(ctrl)
+	product.EXPECT().Enable().Return(nil).AnyTimes()
+	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
+	service := application.ProductService{Persistence: persistence}
+
+	result, err := service.Enable(product)
+	assert.Nil(t, err)
+	assert.Equal(t, product, result)
+}
+
+func TestProductService_Disable(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	product := mock_application.NewMockProductInterface(ctrl)
+	product.EXPECT().Disable().Return(nil).AnyTimes()
+	persistence := mock_application.NewMockProductPersistenceInterface(ctrl)
+	persistence.EXPECT().Save(gomock.Any()).Return(product, nil).AnyTimes()
+	service := application.ProductService{Persistence: persistence}
+
+	result, err := service.Disable(product)
+	assert.Nil(t, err)
+	assert.Equal(t, product, result)
+}

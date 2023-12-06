@@ -1,8 +1,12 @@
-package db
+package db_test
 
 import (
 	"database/sql"
 	"log"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/williamrlbrito/hexagonal-architecture/adapters/db"
 )
 
 var Db *sql.DB
@@ -33,4 +37,17 @@ func createProduct(db *sql.DB) {
 	}
 
 	stmt.Exec()
+}
+
+func TestProductDb_Get(t *testing.T) {
+	setUP()
+	defer Db.Close()
+
+	productDb := db.NewProductDb(Db)
+	product, err := productDb.Get("abc")
+	assert.Nil(t, err)
+	assert.Equal(t, "abc", product.GetID())
+	assert.Equal(t, "Product Test", product.GetName())
+	assert.Equal(t, 10.0, product.GetPrice())
+	assert.Equal(t, "enabled", product.GetStatus())
 }

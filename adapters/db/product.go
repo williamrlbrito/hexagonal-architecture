@@ -31,3 +31,49 @@ func (productDb *ProductDb) Get(id string) (application.ProductInterface, error)
 
 	return &product, nil
 }
+
+func (productDb *ProductDb) Save(product application.ProductInterface) (application.ProductInterface, error) {
+	_, err := productDb.Get(product.GetID())
+
+	if err != nil {
+		return productDb.create(product)
+	}
+
+	return productDb.update(product)
+}
+
+func (productDb *ProductDb) create(product application.ProductInterface) (application.ProductInterface, error) {
+	stmt, err := productDb.db.Prepare("insert into products(id, name, price, status) values(?,?,?,?)")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(product.GetID(), product.GetName(), product.GetPrice(), product.GetStatus())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
+
+func (productDb *ProductDb) update(product application.ProductInterface) (application.ProductInterface, error) {
+	stmt, err := productDb.db.Prepare("update products set name = ?, price = ?, status = ? where id = ?")
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(product.GetName(), product.GetPrice(), product.GetStatus(), product.GetID())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return product, nil
+}
